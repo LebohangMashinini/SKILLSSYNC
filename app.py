@@ -2,6 +2,7 @@ import pyrebase
 import click
 from dotenv import load_dotenv
 import os
+import pwinput
 
 load_dotenv()
 firebaseConfig = {
@@ -22,17 +23,38 @@ db = firebase.database()
 
 print("Firebase Initialized successfully!")
 
-def login():
-    pass
-
-@click.command()
-@click.option('--email', prompt='Enter email', help='Your email address.')
-@click.option('--password', prompt='Enter password', hide_input=True, help='Your password.')
 def signup():
+    click.echo("Signup...")
     email = input("Enter email: ")
-    password = input("Enter your password: ")
+    password = pwinput.pwinput("Enter your password: ")
 
     try:
-        user = auth.password_email_exist(email, password)
+        # Check if user exists
+        auth.get_account_info(email)
+        click.echo("An account with this email already exists.")
     except:
-        print("An account with this email already exist. Please use a different email")
+        try:
+            # Create a new user
+            user = auth.create_user_with_email_and_password(email, password)
+            click.echo("Created account successfully!")
+        except Exception as e:
+            click.echo(f"Error: {e}")
+
+def login():
+    click.echo("Login...")
+    email = input("Enter email: ")
+    password = pwinput.pwinput("Enter your password: ")
+
+    try:
+        auth.get_account_info(password)
+        click.echo("Incorrect password. Please try again.")
+    except:
+        try:
+            # Create a new user
+            login = auth.sign_in_with_email_and_password(email, password)
+            click.echo("Login successful!")
+        except Exception as e:
+            click.echo(f"Error: {e}")
+
+if __name__ == "__main__":
+    signup()
