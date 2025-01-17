@@ -27,17 +27,28 @@ def signup():
     click.echo("Signup...")
     email = input("Enter email: ")
     password = pwinput.pwinput("Enter your password: ")
+    name = input("Enter your name: ")
+    role = input("What is your role (mentor/peer): ")
+
+    if role not in ["mentor", "peer"]:
+        click.echo("Invalid input. Please enter 'mentor' or 'peer'.")
+        return
 
     try:
-        # Check if user exists
-        auth.get_account_info(email)
-        click.echo("An account with this email already exists.")
-    except:
-        try:
-            # Create a new user
-            user = auth.create_user_with_email_and_password(email, password)
-            click.echo("Account created account successfully!")
-        except Exception as e:
+        user = auth.create_user_with_email_and_password(email, password)
+        user_id = user["localId"]
+
+        db.child("users").child(user_id).set({
+            "name": name,
+            "email": email,
+            "role": role
+        })
+        click.echo("Account created account successfully!")
+    except Exception as e:
+        error_message = str(e)
+        if "EMAIL_EXISTS" in error_message:
+            click.echo("An account with this email already exists.")
+        else:
             click.echo(f"Error: {e}")
 
 def login():
@@ -51,3 +62,6 @@ def login():
     except Exception as e:
         auth.get_account_info(password)
         click.echo("Incorrect password. Please try again.")
+
+if __name__ == '__main__':
+    signup()
