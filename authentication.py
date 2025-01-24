@@ -15,6 +15,7 @@ firebaseConfig = {
   'appId': os.getenv('APPID'),
   'measurementId': os.getenv('MEASUREMENTID'),
   }
+print(firebaseConfig)
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 
@@ -63,5 +64,4 @@ def login():
         auth.get_account_info(password)
         click.echo("Incorrect password. Please try again.")
 
-if __name__ == '__main__':
-    signup()
+ 
