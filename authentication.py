@@ -37,6 +37,7 @@ def signup():
 
     try:
         user = auth.create_user_with_email_and_password(email, password)
+        print("User Response:", user)
         user_id = user["localId"]
 
         db.child("users").child(user_id).set({
@@ -46,6 +47,8 @@ def signup():
         })
         click.echo("Account created account successfully!")
     except Exception as e:
+        print("Error Details:", str(e))
+        click.echo(f"Error: {e}")
         error_message = str(e)
         if "EMAIL_EXISTS" in error_message:
             click.echo("An account with this email already exists.")
@@ -64,4 +67,5 @@ def login():
         auth.get_account_info(password)
         click.echo("Incorrect password. Please try again.")
 
- 
+if __name__ == '__main__':
+    signup()
