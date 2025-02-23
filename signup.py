@@ -74,9 +74,11 @@ def signup():
         return
     name = input("Enter your name: ").strip()
     role = input("What is your role (mentor/peer): ").strip().lower()
+    while role not in ["mentor", "peer"]:
+        role = input("Invalid role. Please enter 'mentor' or 'peer': ").strip().lower()
     expertise = input("Are you a Frontend or Backend developer? Please type 'Frontend' or 'Backend': ").strip()
     while expertise not in ["Frontend", "Backend"]:
-        expertise = input("Invalid input. Please type 'Frontend' or 'Backend': ").strip()
+        expertise = input("Invalid input. Please type 'Frontend' or 'Backend': ").strip().lower()
 
     if role not in ["mentor", "peer"]:
         click.echo("Invalid input. Please enter 'mentor' or 'peer'.")
@@ -93,8 +95,21 @@ def signup():
             "role": role,
             "expertise": expertise
         }, auth_token)
-        print("User added to database successfully!")
+        click.echo("Signup successful!")
+        return user
     except Exception as e:
-        click.echo(f"Error: {e}")
-        if "EMAIL_EXISTS" in str(e):
+        error_msg = str(e)
+        click.echo(f"Error: {error_msg}")
+
+        if "EMAIL_EXISTS" in error_msg:
             click.echo("An account with this email already exists.")
+        elif "WEAK_PASSWORD" in error_msg:
+            click.echo("Your password is too weak. Please choose a stronger password.")
+        elif "INVALID_EMAIL" in error_msg:
+            click.echo("Invalid email address.")
+        else:
+            click.echo("An unexpected error occurred.")
+
+
+if __name__ == "__main__":
+    signup()

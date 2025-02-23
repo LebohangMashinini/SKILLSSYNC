@@ -34,6 +34,7 @@ def login():
     try:
         user = auth.sign_in_with_email_and_password(email, password)
         click.echo("Login successful!")
+        return user
     except Exception as e:
         error_str = str(e)
         if "INVALID_PASSWORD" in error_str:
@@ -42,3 +43,6 @@ def login():
             click.echo("Email not found. Please check your email address.")
         else:
             click.echo(f"Error: {e}")
+
+if __name__ == "__main__":
+    login()

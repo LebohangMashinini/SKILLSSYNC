@@ -1,20 +1,31 @@
 import click
 from signup import signup
 from login import login
+from booking_system import booking
 
 def main():
-    print("Firebase Initialized successfully!")
-    print("Choose an option:")
-    print("1. Signup")
-    print("2. Login")
+    click.echo("Firebase Initialized successfully!")
+    click.echo("Choose an option:")
+    click.echo("1. Signup")
+    click.echo("2. Login")
+    click.echo("3. Exit")
+
     choice = input("Enter your choice: ")
 
+    user = None
     if choice == "1":
-        signup()
+        user = signup()
     elif choice == "2":
-        login()
+        user = login()
+    elif choice == "3":
+        click.echo("Exiting...")
+        return
     else:
-        print("Invalid choice.")
+        click.echo("Invalid choice. Try again.")
+        main()
+
+    if user:
+        booking(user)
 
 if __name__ == "__main__":
     main()
